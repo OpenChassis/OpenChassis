@@ -1,4 +1,6 @@
 # OpenChassis
+Please excuse the mess! This project is in very early stages of development. 
+[Check the OpenChassis Wiki for more information](https://github.com/OpenChassis/OpenChassis/wiki)
 
 ## The future home of OpenChassis
 
