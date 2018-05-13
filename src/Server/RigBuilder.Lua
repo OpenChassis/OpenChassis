@@ -1,23 +1,28 @@
 local v3 =  Vector3.new
+local cf = CFrame.new
+local noMass = PhysicalProperties.new(.01,1,1)
+
 local part = Instance.new('Part')
 part.TopSurface = Enum.SurfaceType.Smooth
 part.BottomSurface = Enum.SurfaceType.Smooth
 part.Anchored = true
-part.Size = Vector3.new(1,1,1)
+part.Size = v3(1,1,1)
+
 local a = Instance.new('Attachment')
-local weld = Instance.new('Weld')
 a.Parent = part
 a.Name = 'Hub'
+
+local weld = Instance.new('Weld')
+
 local ball = part:Clone()
 ball.Shape = 'Ball'
 ball.Name ='WheelCollider'
 ball.Size = Vector3.new(3,3,3)
+
 part.CanCollide = false
+
 local vecf = Instance.new('VectorForce')
 vecf.Force = v3(0,0,0)
-local cf = CFrame.new
-local noMass = PhysicalProperties.new(.01,1,1)
-
 
 local RigBuilder = {}
 
