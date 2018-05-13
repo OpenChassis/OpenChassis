@@ -33,7 +33,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	
 	-- fire prebuild event if it exists
 	if Factory.ChassisBuilding then
-		if (type(Factory.ChassisBuilding) == 'boolean') and Factory.ChassisBuilding ~= true then
+		if (type(Factory.ChassisBuilding) == 'boolean' and Factory.ChassisBuilding ~= true) then
 		
 		else
 			Factory.ChassisBuilding:Fire(chassisId)
