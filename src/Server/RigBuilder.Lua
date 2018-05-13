@@ -26,7 +26,7 @@ vecf.Force = v3(0,0,0)
 
 local RigBuilder = {}
 
-function RigBuilder.new( settings, modelRef, owner )
+function RigBuilder.new(settings, modelRef, owner )
 	
 	local self = {}
 	
@@ -126,6 +126,8 @@ function RigBuilder.new( settings, modelRef, owner )
 		spring.Visible = settings._isDev and true or false
 		spring.FreeLength = settings[sideVar .. 'SuspensionHeight']
 		spring.Stiffness = settings[sideVar .. 'Stiffness']
+		spring.Damping = 	settings[sideVar .. 'Damping']	
+		
 		return spring
 	end
 	
