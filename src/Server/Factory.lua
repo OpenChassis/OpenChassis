@@ -27,6 +27,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	local main = modelRef.PrimaryPart
 	
 	local wheelWeld = modelRef:FindFirstChild('WheelWelded')
+	local parts = modelRef:FindFirstChild('Parts')
 	
 	local chassisId = httpSer:GenerateGUID(false)
 	
@@ -46,7 +47,6 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	local axleF, axleR = rigBuilder.GetAxles()
 	
 	local fl, fr, rl, rr = rigBuilder.GetWheels(axleF, axleR)
-	--local rl, rr = rigBuilder.GetWheels(axleR)
 	local wheels = {
 		['fl'] = fl,
 		['fr'] = fr,
@@ -60,8 +60,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	local constraints = {}
 	local wheelForces = {}
 	--local suspensionForces = {}
-	
-	
+
 	if not modelRef:FindFirstChild('Wheels') then
 		local m = Instance.new("Model")
 		m.Parent = modelRef
@@ -79,9 +78,6 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		end
 		
 		v.Parent = keyedWheel
-		--keyedWeld.Parent = keyedWheel
-		
-		--keyedWeld:SetPrimaryPartCFrame(v.CFrame)
 
 		suspension[k] = rigBuilder.GetSuspension(v)
 		suspension[k].Parent = keyedWheel
@@ -95,9 +91,6 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		
 		wheelModels[k] = keyedWheel
 		
-		--keyedWheel.Parent = workspace
-		--suspensionForces[k] = rigBuilder:RigSpringCompressor(v)
-		
 		v.Parent = keyedWheel
 	end
 	
@@ -106,8 +99,6 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	end
 	
 	if wheelWeld then
-		print('wheelWeld')
-		print(wheelWeld.Name)
 		for k, v in pairs(wheelModels) do
 			local visuals = wheelWeld:Clone()
 			visuals.Parent = v
@@ -119,16 +110,21 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		wheelWeld:Destroy()
 	end
 	
-	wait(1)
+	wait(.1)
 	
 	local massF, massR, massC = rigBuilder.RigMass(axleF, axleR)
 	
 	local aeroF, aeroR, aeroC = rigBuilder.RigAero(axleF, axleR)
 	
-	-- weld to part main part or model modelRef ignoring suspension and wheels
-	--rigBuilder.WeldExclude(main, modelRef, {wheels, wheelWeld})
-	
-	
+	if parts then
+		rigBuilder.RemoveMass(parts)
+		for _, v in pairs(parts:GetDescendants()) do
+			if (v:IsA('BasePart') and v.ClassName ~= 'Terrain') then
+				v.CanCollide = false
+				rigBuilder.SingleWeld(main, v)
+			end
+		end
+	end
 	
 	rigBuilder.UnanchorAll(modelRef)
 	
@@ -151,7 +147,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		end
 	end
 	
-	return true --chassis.new(modelRef, owner)
+	return true
 end
 
 setmetatable(Factory, mt)
