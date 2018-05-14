@@ -28,12 +28,11 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	
 	local wheelWeld = modelRef:FindFirstChild('WheelWelded')
 	
-	
 	local chassisId = httpSer:GenerateGUID(false)
 	
 	-- fire prebuild event if it exists
 	if Factory.ChassisBuilding then
-		if (type(Factory.ChassisBuilding) == 'boolean' and Factory.ChassisBuilding ~= true) then
+		if (type(Factory.ChassisBuilding) == 'boolean') and Factory.ChassisBuilding ~= true then
 		
 		else
 			Factory.ChassisBuilding:Fire(chassisId)
@@ -55,6 +54,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		['rr'] = rr
 	}
 	
+	local wheelModels = {}
 	
 	local suspension = {}
 	local constraints = {}
@@ -70,6 +70,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	
 	for k,v in pairs(wheels) do
 		local keyedWheel = modelRef.Wheels:FindFirstChild(k)
+		--local keyedWeld = wheelWeld:Clone()
 		
 		if not keyedWheel then
 			keyedWheel = Instance.new("Model")
@@ -78,7 +79,13 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		end
 		
 		v.Parent = keyedWheel
+		--keyedWeld.Parent = keyedWheel
 		
+		--keyedWeld:SetPrimaryPartCFrame(v.CFrame)
+		
+		for _, wheelPart in pairs(keyedWeld:GetChildren()) do
+			local wheelPartWeld = rigBuilder.SingleWeld(v, wheelPart)
+		end
 		suspension[k] = rigBuilder.GetSuspension(v)
 		suspension[k].Parent = keyedWheel
 		
@@ -89,7 +96,9 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	
 		wheelForces[k] = rigBuilder.RigWheelTorque(v)
 		
+		wheelModels[k] = keyedWheel
 		
+		keyedWheel.Parent = workspace
 		--suspensionForces[k] = rigBuilder:RigSpringCompressor(v)
 		
 		v.Parent = keyedWheel
@@ -108,17 +117,14 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	-- weld to part main part or model modelRef ignoring suspension and wheels
 	--rigBuilder.WeldExclude(main, modelRef, {wheels, wheelWeld})
 	
-	local wheelWelds = {}
-	
 	if wheelWeld then
-		for k, v in pairs(wheels) do
+		for k, _ in pairs(wheels) do
 			local visuals = wheelWeld:Clone()
 			visuals.Parent = wheels[k]
-			wheelWelds[k] = {
-				rigBuilder.WeldWheel(visuals, wheels[k])
-			}
+			rigBuilder.WeldWheel(wheels[k], visuals)
 		end
 	end
+	
 	
 	rigBuilder.UnanchorAll(modelRef)
 	
@@ -134,7 +140,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	end
 	
 	if Factory.ChassisCreated then
-		if (type(Factory.ChassisCreated) == 'boolean' and Factory.ChassisCreated ~= true) then
+		if (type(Factory.ChassisCreated) == 'bool' or 'boolean') and Factory.ChassisCreated ~= true then
 		
 		else
 			Factory.ChassisCreated:Fire(chassisId)
