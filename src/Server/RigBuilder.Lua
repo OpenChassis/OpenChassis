@@ -113,7 +113,6 @@ function RigBuilder.new(settings, modelRef, owner )
 		
 		for _, v in pairs(wheelsL) do
 			v.Size = v3(settings.WheelColliderRadius, settings.WheelColliderRadius, settings.WheelColliderRadius)
-			v.CFrame = axleF *cf(-axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
 			v.Hub.Orientation = v3(0,0,-90)
 			
 			if settings._isDev == true then
@@ -125,7 +124,6 @@ function RigBuilder.new(settings, modelRef, owner )
 		
 		for _, v in pairs(wheelsR) do
 			v.Size = v3(settings.WheelColliderRadius, settings.WheelColliderRadius, settings.WheelColliderRadius)
-			v.CFrame = axleF *cf(axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
 			v.Hub.Orientation = v3(0,0,90)
 			
 			if settings._isDev == true then
@@ -135,6 +133,11 @@ function RigBuilder.new(settings, modelRef, owner )
 			end
 		end
 		
+		fl.CFrame = axleF *cf(-axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
+		fr.CFrame = axleF *cf(axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
+		rl.CFrame = axleR *cf(-axleR.rightVector.Unit * (settings.RearAxleWidth / 2))
+		rr.CFrame = axleR *cf(axleR.rightVector.Unit * (settings.RearAxleWidth / 2))
+
 		return fl, fr, rl, rr
 	end
 	
