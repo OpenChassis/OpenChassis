@@ -83,9 +83,6 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		
 		--keyedWeld:SetPrimaryPartCFrame(v.CFrame)
 		
-		for _, wheelPart in pairs(keyedWeld:GetChildren()) do
-			local wheelPartWeld = rigBuilder.SingleWeld(v, wheelPart)
-		end
 		suspension[k] = rigBuilder.GetSuspension(v)
 		suspension[k].Parent = keyedWheel
 		
