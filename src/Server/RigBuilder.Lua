@@ -19,7 +19,7 @@ local weld = Instance.new('Weld')
 local ball = part:Clone()
 ball.Shape = 'Ball'
 ball.Name ='WheelCollider'
-ball.Size = Vector3.new(3,3,3)
+ball.Size = Vector3.new(2.7,2.7,2.7)
 
 part.CanCollide = false
 
@@ -104,10 +104,10 @@ function RigBuilder.new(settings, modelRef, owner )
 	local function GetWheels(axleF, axleR)
 		local fl, fr, rl, rr = ball:Clone(), ball:Clone(), ball:Clone(), ball:Clone()
 		
-		fl.CFrame = axleF *cf(-axleF.rightVector.Unit * (settings.FrontAxleWidth))
-		fr.CFrame = axleF *cf(axleF.rightVector.Unit * (settings.FrontAxleWidth))
-		rl.CFrame = axleR *cf(-axleR.rightVector.Unit * (settings.RearAxleWidth))
-		rr.CFrame = axleR *cf(axleR.rightVector.Unit * (settings.RearAxleWidth))
+		fl.CFrame = axleF *cf(-axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
+		fr.CFrame = axleF *cf(axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
+		rl.CFrame = axleR *cf(-axleR.rightVector.Unit * (settings.RearAxleWidth / 2))
+		rr.CFrame = axleR *cf(axleR.rightVector.Unit * (settings.RearAxleWidth / 2))
 		
 		fl.Hub.Orientation = v3(0,0,-90)
 		rl.Hub.Orientation = v3(0,0,-90)
