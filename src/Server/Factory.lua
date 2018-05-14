@@ -82,7 +82,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		--keyedWeld.Parent = keyedWheel
 		
 		--keyedWeld:SetPrimaryPartCFrame(v.CFrame)
-		
+
 		suspension[k] = rigBuilder.GetSuspension(v)
 		suspension[k].Parent = keyedWheel
 		
@@ -95,7 +95,7 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 		
 		wheelModels[k] = keyedWheel
 		
-		keyedWheel.Parent = workspace
+		--keyedWheel.Parent = workspace
 		--suspensionForces[k] = rigBuilder:RigSpringCompressor(v)
 		
 		v.Parent = keyedWheel
@@ -103,6 +103,20 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	
 	for k, v in pairs(suspension) do
 		local w = rigBuilder.SingleWeld(main, v)
+	end
+	
+	if wheelWeld then
+		print('wheelWeld')
+		print(wheelWeld.Name)
+		for k, v in pairs(wheelModels) do
+			local visuals = wheelWeld:Clone()
+			visuals.Parent = v
+			rigBuilder.WeldWheel(v.WheelCollider, visuals)
+			wait()
+			rigBuilder.UnanchorAll(v)
+		end
+		
+		wheelWeld:Destroy()
 	end
 	
 	wait(1)
@@ -114,13 +128,6 @@ function Factory.newChassis(buildSettings, modelRef, owner)
 	-- weld to part main part or model modelRef ignoring suspension and wheels
 	--rigBuilder.WeldExclude(main, modelRef, {wheels, wheelWeld})
 	
-	if wheelWeld then
-		for k, _ in pairs(wheels) do
-			local visuals = wheelWeld:Clone()
-			visuals.Parent = wheels[k]
-			rigBuilder.WeldWheel(wheels[k], visuals)
-		end
-	end
 	
 	
 	rigBuilder.UnanchorAll(modelRef)
