@@ -4,11 +4,11 @@
 return {
 	_isDev = true,
 	
-	FrontAxleOffset = 7,
-	FrontAxleHeight = -1.2,
-	Wheelbase = 13,
-	FrontAxleWidth = 3,
-	RearAxleWidth = 3.4,
+	FrontAxleOffset = 5.9,
+	FrontAxleHeight = -2,
+	Wheelbase = 11,
+	FrontAxleWidth = 6,
+	RearAxleWidth = 6,
 	
 	FrontSuspensionHeight = 2.3,
 	FrontStiffness = 2500,
