@@ -1,5 +1,7 @@
 local v3 =  Vector3.new
 local cf = CFrame.new
+local cfa = CFrame.Angles
+local rad = math.rad
 local noMass = PhysicalProperties.new(.01,1,1)
 
 local part = Instance.new('Part')
@@ -59,6 +61,19 @@ function RigBuilder.new(settings, modelRef, owner )
 	local function WeldWheel(wheel, visualsModel)
 		RemoveMass(visualsModel)
 		
+		local visModel = Instance.new('Model')
+		visModel.Parent = wheel.Parent
+		
+		if visualsModel:FindFirstChild('Main') then
+			if visualsModel.Main:FindFirstChild('ColliderCenter') then
+				local wOrient = wheel.Hub.WorldOrientation
+				if string.lower(string.sub(wheel.Parent.Name, 2,2)) == 'r' then
+					wOrient = v3(wOrient.x, wOrient.y, -wOrient.z)
+				end
+				visualsModel:SetPrimaryPartCFrame((wheel.CFrame * cfa(rad(wOrient.X), rad(wOrient.Y), rad(wOrient.Z))) * cf(visualsModel.Main.ColliderCenter.Position))
+			end
+		end
+		
 		for _, v in pairs(visualsModel:GetDescendants()) do 
 			if v:IsA('BasePart') then
 				local w = SingleWeld(wheel, v)
@@ -72,7 +87,6 @@ function RigBuilder.new(settings, modelRef, owner )
 			
 			if v:IsA('BasePart') then
 				if v.ClassName ~= 'Terrain' then
-					print(v.Name)
 					v.Anchored = false
 				end
 			end
@@ -88,7 +102,7 @@ function RigBuilder.new(settings, modelRef, owner )
 	
 	-- todo: size ball by wheelsizes
 	local function GetWheels(axleF, axleR)
-		local fl, fr, rl, rr= ball:Clone(), ball:Clone(), ball:Clone(), ball:Clone()
+		local fl, fr, rl, rr = ball:Clone(), ball:Clone(), ball:Clone(), ball:Clone()
 		
 		fl.CFrame = axleF *cf(-axleF.rightVector.Unit * (settings.FrontAxleWidth))
 		fr.CFrame = axleF *cf(axleF.rightVector.Unit * (settings.FrontAxleWidth))
@@ -99,6 +113,18 @@ function RigBuilder.new(settings, modelRef, owner )
 		rl.Hub.Orientation = v3(0,0,-90)
 		fr.Hub.Orientation = v3(0,0,90)
 		rr.Hub.Orientation = v3(0,0,90)
+		
+		if settings._isDev == true then
+			fl.Transparency = .6
+			fr.Transparency = .6
+			rl.Transparency = .6
+			rr.Transparency = .6
+		else
+			fl.Transparency = 1
+			fr.Transparency = 1
+			rl.Transparency = 1
+			rr.Transparency = 1
+		end
 		
 		return fl, fr, rl, rr
 	end
@@ -114,6 +140,12 @@ function RigBuilder.new(settings, modelRef, owner )
 		mount.Name = 'StrutMount'
 		mount.Hub.Orientation = v3(0,0,-90)
 		mount.CFrame = wheel.CFrame * cf(wheel.CFrame.upVector.Unit * settings[sideVar .. 'SuspensionHeight'])
+		
+		if settings._isDev == true then
+			mount.Transparency = .6
+		else
+			mount.Transparency = 1
+		end
 	
 		return mount
 	end
