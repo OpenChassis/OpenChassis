@@ -20,7 +20,7 @@ local mt = {
 
 local Factory = {}
 	
-function Factory.newChassis(buildSettings, modelRef, owner)
+function Factory.NewChassis(buildSettings, modelRef, owner)
 
 	local rigBuilder = rigWorker.new(buildSettings, modelRef, owner)
 	
