@@ -40,10 +40,6 @@ function RigBuilder.new(settings, modelRef, owner )
 		end
 	end
 	
-	local function WeldWheel(visualsModel, wheel)
-		
-	end
-	
 	local function DontCollide()
 		
 	end
@@ -59,6 +55,17 @@ function RigBuilder.new(settings, modelRef, owner )
 		w.Part1 = p1
 		w.C0 = p0.CFrame:Inverse() * p1.CFrame
 	end
+	
+	local function WeldWheel(wheel, visualsModel)
+		RemoveMass(visualsModel)
+		
+		for _, v in pairs(visualsModel:GetDescendants()) do 
+			if v:IsA('BasePart') then
+				local w = SingleWeld(wheel, v)
+			end
+		end
+	end
+	
 	
 	local function UnanchorAll(model)
 		for _, v in pairs(model:GetDescendants()) do
