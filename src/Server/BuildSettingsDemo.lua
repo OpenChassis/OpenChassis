@@ -6,9 +6,11 @@ return {
 	
 	FrontAxleOffset = 5.9,
 	FrontAxleHeight = -2,
-	Wheelbase = 11,
+	Wheelbase = 10.9,
 	FrontAxleWidth = 6,
 	RearAxleWidth = 6,
+	
+	WheelColliderRadius = 2.6,
 	
 	FrontSuspensionHeight = 2.3,
 	FrontStiffness = 2500,
