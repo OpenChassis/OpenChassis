@@ -19,7 +19,6 @@ local weld = Instance.new('Weld')
 local ball = part:Clone()
 ball.Shape = 'Ball'
 ball.Name ='WheelCollider'
-ball.Size = Vector3.new(2.7,2.7,2.7)
 
 part.CanCollide = false
 
@@ -47,7 +46,13 @@ function RigBuilder.new(settings, modelRef, owner )
 	end
 	
 	local function SetNetwork(modelRef, owner)
-		
+		for _, v in pairs(modelRef:GetDescendants()) do
+			if (v:IsA('BasePart') and v.ClassName ~= 'Terrain') then
+				if v.Anchored == false then
+					v:SetNetworkOwner(owner)
+				end
+			end
+		end
 	end
 	
 	local function SingleWeld(p0, p1)
@@ -104,26 +109,30 @@ function RigBuilder.new(settings, modelRef, owner )
 	local function GetWheels(axleF, axleR)
 		local fl, fr, rl, rr = ball:Clone(), ball:Clone(), ball:Clone(), ball:Clone()
 		
-		fl.CFrame = axleF *cf(-axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
-		fr.CFrame = axleF *cf(axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
-		rl.CFrame = axleR *cf(-axleR.rightVector.Unit * (settings.RearAxleWidth / 2))
-		rr.CFrame = axleR *cf(axleR.rightVector.Unit * (settings.RearAxleWidth / 2))
+		local wheelsL, wheelsR = {fl, rl, }, {fr, rr}
 		
-		fl.Hub.Orientation = v3(0,0,-90)
-		rl.Hub.Orientation = v3(0,0,-90)
-		fr.Hub.Orientation = v3(0,0,90)
-		rr.Hub.Orientation = v3(0,0,90)
+		for _, v in pairs(wheelsL) do
+			v.Size = v3(settings.WheelColliderRadius, settings.WheelColliderRadius, settings.WheelColliderRadius)
+			v.CFrame = axleF *cf(-axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
+			v.Hub.Orientation = v3(0,0,-90)
+			
+			if settings._isDev == true then
+				v.Transparency = .6
+			else
+				v.Transparency = 1
+			end
+		end
 		
-		if settings._isDev == true then
-			fl.Transparency = .6
-			fr.Transparency = .6
-			rl.Transparency = .6
-			rr.Transparency = .6
-		else
-			fl.Transparency = 1
-			fr.Transparency = 1
-			rl.Transparency = 1
-			rr.Transparency = 1
+		for _, v in pairs(wheelsR) do
+			v.Size = v3(settings.WheelColliderRadius, settings.WheelColliderRadius, settings.WheelColliderRadius)
+			v.CFrame = axleF *cf(axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
+			v.Hub.Orientation = v3(0,0,90)
+			
+			if settings._isDev == true then
+				v.Transparency = .6
+			else
+				v.Transparency = 1
+			end
 		end
 		
 		return fl, fr, rl, rr
