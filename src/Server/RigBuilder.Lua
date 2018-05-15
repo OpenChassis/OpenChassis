@@ -72,10 +72,15 @@ function RigBuilder.new(settings, modelRef, owner )
 		if visualsModel:FindFirstChild('Main') then
 			if visualsModel.Main:FindFirstChild('ColliderCenter') then
 				local wOrient = wheel.Hub.WorldOrientation
+				
 				if string.lower(string.sub(wheel.Parent.Name, 2,2)) == 'r' then
 					wOrient = v3(wOrient.x, wOrient.y, -wOrient.z)
 				end
-				visualsModel:SetPrimaryPartCFrame((wheel.CFrame * cfa(rad(wOrient.X), rad(wOrient.Y), rad(wOrient.Z))) * cf(visualsModel.Main.ColliderCenter.Position))
+				
+				local angles = cfa(rad(wOrient.X), rad(wOrient.Y), rad(wOrient.Z))
+				local centerOffset = cf(visualsModel.Main.ColliderCenter.Position)
+				
+				visualsModel:SetPrimaryPartCFrame(wheel.CFrame * centerOffset * angles)
 			end
 		end
 		
@@ -144,7 +149,7 @@ function RigBuilder.new(settings, modelRef, owner )
 	local function GetSuspension(wheel)
 		
 		local sideVar = 'Rear'
-		if string.lower(string.sub(wheel.Name,1,1)) == 'f' then
+		if string.lower(string.sub(wheel.Parent.Name,1,1)) == 'f' then
 			sideVar = 'Front'
 		end
 		
@@ -165,7 +170,7 @@ function RigBuilder.new(settings, modelRef, owner )
 	local function RigSpring(wheel, mount)
 		
 		local sideVar = 'Rear'
-		if string.lower(string.sub(wheel.Name,1,1)) == 'f' then
+		if string.lower(string.sub(wheel.Parent.Name,1,1)) == 'f' then
 			sideVar = 'Front'
 		end
 		
@@ -185,16 +190,16 @@ function RigBuilder.new(settings, modelRef, owner )
 	local function RigDampener(wheel, mount)
 		
 		local sideVar = 'Rear'
-		if string.lower(string.sub(wheel.Name,1,1)) == 'f' then
+		if string.lower(string.sub(wheel.Parent.Name,1,1)) == 'f' then
 			sideVar = 'Front'
 		end
+		local axleSide = string.lower(string.sub(wheel.Parent.Name,2,2))
 		
 		local damp = Instance.new('CylindricalConstraint')
 		damp.Parent = mount
 		damp.Attachment0 = mount.Hub
 		damp.Attachment1 = wheel.Hub
-		
-		damp.InclinationAngle = 90
+		damp.InclinationAngle = 90 - (axleSide == 'l' and -settings[sideVar .. 'Camber'] or settings[sideVar .. 'Camber'])
 		damp.LimitsEnabled = true
 		damp.LowerLimit = settings[sideVar .. 'SuspensionHeight'] / 2
 		damp.UpperLimit = settings[sideVar .. 'SuspensionHeight']
