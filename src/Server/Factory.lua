@@ -103,6 +103,9 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 			local visuals = wheelWeld:Clone()
 			visuals.Parent = v
 			rigBuilder.WeldWheel(v.WheelCollider, visuals)
+		end
+		wait(.2)
+		for k, v in pairs(wheelModels) do
 			wait()
 			rigBuilder.UnanchorAll(v)
 		end
