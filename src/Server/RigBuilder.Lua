@@ -81,19 +81,19 @@ function RigBuilder.new(settings, modelRef, owner )
 				local wOrient = wheel.Hub.Orientation
 				
 				if string.lower(string.sub(wheel.Parent.Name, 2,2)) == 'r' then
-					wOrient = v3(wOrient.x, wOrient.y, -wOrient.z)
+					wOrient = v3(wOrient.X, wOrient.Y, -wOrient.Z)
 				end
 				
 				local angles = cfa(rad(wOrient.X), rad(wOrient.Y), rad(wOrient.Z))
-				local centerOffset = cf(visualsModel.Main.ColliderCenter.Position)
+				local centerOffset = cf(-visualsModel.Main.ColliderCenter.Position)
 				
-				visualsModel:SetPrimaryPartCFrame(wheel.CFrame * centerOffset)
+				visualsModel:SetPrimaryPartCFrame((wheel.CFrame* angles) * centerOffset)
 				
 				local axWeld = weld:Clone()
 				axWeld.Parent = wheel
 				axWeld.Part0 = wheel
 				axWeld.Part1 = visualsModel.Main
-				axWeld.C0 = wheel.CFrame:Inverse() * ((visualsModel.Main.CFrame * angles) * centerOffset)
+				axWeld.C0 = wheel.CFrame:Inverse() * ((wheel.CFrame* angles) * centerOffset)
 			end
 		end
 		
