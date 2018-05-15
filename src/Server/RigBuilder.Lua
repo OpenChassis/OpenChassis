@@ -69,9 +69,16 @@ function RigBuilder.new(settings, modelRef, owner )
 		local visModel = Instance.new('Model')
 		visModel.Parent = wheel.Parent
 		
+		
 		if visualsModel:FindFirstChild('Main') then
 			if visualsModel.Main:FindFirstChild('ColliderCenter') then
-				local wOrient = wheel.Hub.WorldOrientation
+				for _, v in pairs(visualsModel:GetDescendants()) do 
+					if v:IsA('BasePart') and v.Name ~= 'Main' then
+						local w = SingleWeld(visualsModel.Main, v)
+					end
+				end
+
+				local wOrient = wheel.Hub.Orientation
 				
 				if string.lower(string.sub(wheel.Parent.Name, 2,2)) == 'r' then
 					wOrient = v3(wOrient.x, wOrient.y, -wOrient.z)
@@ -80,15 +87,17 @@ function RigBuilder.new(settings, modelRef, owner )
 				local angles = cfa(rad(wOrient.X), rad(wOrient.Y), rad(wOrient.Z))
 				local centerOffset = cf(visualsModel.Main.ColliderCenter.Position)
 				
-				visualsModel:SetPrimaryPartCFrame(wheel.CFrame * centerOffset * angles)
+				visualsModel:SetPrimaryPartCFrame(wheel.CFrame * centerOffset)
+				
+				local axWeld = weld:Clone()
+				axWeld.Parent = wheel
+				axWeld.Part0 = wheel
+				axWeld.Part1 = visualsModel.Main
+				axWeld.C0 = wheel.CFrame:Inverse() * ((visualsModel.Main.CFrame * angles) * centerOffset)
 			end
 		end
 		
-		for _, v in pairs(visualsModel:GetDescendants()) do 
-			if v:IsA('BasePart') then
-				local w = SingleWeld(wheel, v)
-			end
-		end
+		
 	end
 	
 	
@@ -104,8 +113,9 @@ function RigBuilder.new(settings, modelRef, owner )
 	end
 	
 	local function GetAxles()
-		local axleF = main.CFrame * cf((main.CFrame.lookVector.Unit * settings.FrontAxleOffset + main.CFrame.upVector.Unit * settings.FrontAxleHeight))
-		local axleR = axleF * cf(-axleF.lookVector.Unit * settings.Wheelbase)
+		
+		local axleF = main.CFrame * cf(0, settings.FrontAxleHeight, -settings.FrontAxleOffset)
+		local axleR = axleF * cf(0, 0, settings.Wheelbase)
 		
 		return axleF, axleR
 	end
@@ -138,10 +148,10 @@ function RigBuilder.new(settings, modelRef, owner )
 			end
 		end
 		
-		fl.CFrame = axleF *cf(-axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
-		fr.CFrame = axleF *cf(axleF.rightVector.Unit * (settings.FrontAxleWidth / 2))
-		rl.CFrame = axleR *cf(-axleR.rightVector.Unit * (settings.RearAxleWidth / 2))
-		rr.CFrame = axleR *cf(axleR.rightVector.Unit * (settings.RearAxleWidth / 2))
+		fl.CFrame = axleF *cf(-settings.FrontAxleWidth / 2,0,0)
+		fr.CFrame = axleF *cf(settings.FrontAxleWidth / 2,0,0)
+		rl.CFrame = axleR *cf(-settings.RearAxleWidth / 2,0,0)
+		rr.CFrame = axleR *cf(settings.RearAxleWidth / 2,0,0)
 
 		return fl, fr, rl, rr
 	end
