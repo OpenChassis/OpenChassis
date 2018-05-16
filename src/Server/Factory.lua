@@ -41,7 +41,6 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 	end
 	
 	rigBuilder.RemoveMass(modelRef)
-	rigBuilder.DontCollide(modelRef)
 	
 	-- calc axleF from main offset then axleR from 
 	local axleF, axleR = rigBuilder.GetAxles()
@@ -104,7 +103,7 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 			visuals.Parent = v
 			rigBuilder.WeldWheel(v.WheelCollider, visuals)
 		end
-		wait(.2)
+
 		for k, v in pairs(wheelModels) do
 			wait()
 			rigBuilder.UnanchorAll(v)
@@ -118,6 +117,8 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 	local massF, massR, massC = rigBuilder.RigMass(axleF, axleR)
 	
 	local aeroF, aeroR, aeroC = rigBuilder.RigAero(axleF, axleR)
+	
+	rigBuilder.SetCollision(modelRef)
 	
 	if parts then
 		rigBuilder.RemoveMass(parts)
@@ -133,7 +134,6 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 	
 	if owner then
 		rigBuilder.SetNetwork(modelRef, owner)
-	
 	end
 	
 	if buildSettings._isDev == true then

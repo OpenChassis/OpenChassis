@@ -3,6 +3,13 @@ local cf = CFrame.new
 local cfa = CFrame.Angles
 local rad = math.rad
 local noMass = PhysicalProperties.new(.01,1,1)
+local physSer = game:GetService('PhysicsService')
+
+local wheelCollisonGroup, bodyCollisionGroup, lowresColliderGroup = 'WheelGroup', 'BodyGroup', 'ColliderGroup'
+
+local wheelGroup = physSer:CreateCollisionGroup(wheelCollisonGroup)
+local bodyGroup = physSer:CreateCollisionGroup(bodyCollisionGroup)
+local colliderGroup = physSer:CreateCollisionGroup(lowresColliderGroup)
 
 local part = Instance.new('Part')
 part.TopSurface = Enum.SurfaceType.Smooth
@@ -33,16 +40,40 @@ function RigBuilder.new(settings, modelRef, owner )
 	
 	local main = modelRef.PrimaryPart
 	
-	local function RemoveMass(thing)
-		for _, v in pairs(thing:GetDescendants()) do
+	local function RemoveMass(modelRef)
+		for _, v in pairs(modelRef:GetDescendants()) do
 			if v:IsA('BasePart') then
 				v.CustomPhysicalProperties = noMass
 			end
 		end
 	end
 	
-	local function DontCollide()
+	local function SetCollision(modelRef)
+		if not modelRef:FindFirstChild('BodyColliders') then
+			local m = Instance.new("Model")
+			m.Parent = modelRef
+			m.Name = 'BodyColliders'
+		end
 		
+		for _, v in pairs(modelRef.Parts:GetDescendants()) do
+			if v:IsA('BasePart') then
+				physSer:SetPartCollisionGroup(v, bodyCollisionGroup)
+			end
+		end
+		
+		for _, v in pairs(modelRef.Wheels:GetChildren()) do
+			physSer:SetPartCollisionGroup(v.WheelCollider, wheelCollisonGroup)
+		end
+		
+		for _, v in pairs(modelRef.BodyColliders:GetDescendants()) do
+			if v:IsA('BasePart') then
+				physSer:SetPartCollisionGroup(v, lowresColliderGroup)
+			end
+		end
+		
+		physSer:CollisionGroupSetCollidable(wheelCollisonGroup, bodyCollisionGroup, false)
+		physSer:CollisionGroupSetCollidable(wheelCollisonGroup, lowresColliderGroup, false)
+		physSer:CollisionGroupSetCollidable(bodyCollisionGroup, lowresColliderGroup, false)
 	end
 	
 	local function SetNetwork(modelRef, owner)
@@ -96,8 +127,6 @@ function RigBuilder.new(settings, modelRef, owner )
 				axWeld.C0 = wheel.CFrame:Inverse() * ((wheel.CFrame* angles) * centerOffset)
 			end
 		end
-		
-		
 	end
 	
 	
@@ -257,7 +286,7 @@ function RigBuilder.new(settings, modelRef, owner )
 
 	self.RemoveMass = RemoveMass
 	self.UnanchorAll = UnanchorAll
-	self.DontCollide = DontCollide
+	self.SetCollision = SetCollision
 	self.SetNetwork = SetNetwork
 	self.WeldWheel = WeldWheel
 	self.SingleWeld = SingleWeld
