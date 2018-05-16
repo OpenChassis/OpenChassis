@@ -1,5 +1,8 @@
-local signal = require(script.Signal)
+-- module script child of server Folder
+
+local signal = require(game.ReplicatedStorage:WaitForChild('Shared').Signal)
 local rigWorker = require(script.RigBuilder)
+local chassisServer = require(script.ChassisServer)
 
 local httpSer = game:GetService('HttpService')
 
@@ -150,7 +153,7 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 		end
 	end
 	
-	return true
+	return chassisServer.new(chassisId, buildSettings, modelRef, owner)
 end
 
 setmetatable(Factory, mt)
