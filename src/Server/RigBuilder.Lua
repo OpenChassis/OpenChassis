@@ -3,6 +3,13 @@ local cf = CFrame.new
 local cfa = CFrame.Angles
 local rad = math.rad
 local noMass = PhysicalProperties.new(.01,1,1)
+local physSer = game:GetService('PhysicsService')
+
+local wheelCollisonGroup, bodyCollisionGroup, lowresColliderGroup = 'WheelGroup', 'BodyGroup', 'ColliderGroup'
+
+local wheelGroup = physSer:CreateCollisionGroup(wheelCollisonGroup)
+local bodyGroup = physSer:CreateCollisionGroup(bodyCollisionGroup)
+local colliderGroup = physSer:CreateCollisionGroup(lowresColliderGroup)
 
 local part = Instance.new('Part')
 part.TopSurface = Enum.SurfaceType.Smooth
@@ -33,12 +40,40 @@ function RigBuilder.new(settings, modelRef, owner )
 	
 	local main = modelRef.PrimaryPart
 	
-	local function RemoveMass(thing)
-		for _, v in pairs(thing:GetDescendants()) do
+	local function RemoveMass(modelRef)
+		for _, v in pairs(modelRef:GetDescendants()) do
 			if v:IsA('BasePart') then
 				v.CustomPhysicalProperties = noMass
 			end
 		end
+	end
+	
+	local function SetCollision(modelRef)
+		if not modelRef:FindFirstChild('BodyColliders') then
+			local m = Instance.new("Model")
+			m.Parent = modelRef
+			m.Name = 'BodyColliders'
+		end
+		
+		for _, v in pairs(modelRef.Parts:GetDescendants()) do
+			if v:IsA('BasePart') then
+				physSer:SetPartCollisionGroup(v, bodyGroup)
+			end
+		end
+		
+		for _, v in pairs(modelRef.Wheels:GetChildren()) do
+			physSer:SetPartCollisionGroup(v.WheelCollider, wheelGroup)
+		end
+		
+		for _, v in pairs(modelRef.BodyColliders:GetDescendants()) do
+			if v:IsA('BasePart') then
+				physSer:SetPartCollisionGroup(v, colliderGroup)
+			end
+		end
+		
+		physSer:CollisionGroupSetCollidable(wheelGroup, bodyGroup, false)
+		physSer:CollisionGroupSetCollidable(wheelGroup, colliderGroup, false)
+		physSer:CollisionGroupSetCollidable(bodyGroup, colliderGroup, false)
 	end
 	
 	local function SetNetwork(modelRef, owner)
@@ -57,8 +92,6 @@ function RigBuilder.new(settings, modelRef, owner )
 		w.Part0 = p0
 		w.Part1 = p1
 		w.C0 = p0.CFrame:Inverse() * p1.CFrame
-		
-		return w
 	end
 	
 	local function WeldWheel(wheel, visualsModel)
@@ -87,12 +120,13 @@ function RigBuilder.new(settings, modelRef, owner )
 				
 				visualsModel:SetPrimaryPartCFrame((wheel.CFrame* angles) * centerOffset)
 				
-				local axWeld = SingleWeld(wheel, visualsModel.Main)
+				local axWeld = weld:Clone()
+				axWeld.Parent = wheel
+				axWeld.Part0 = wheel
+				axWeld.Part1 = visualsModel.Main
 				axWeld.C0 = wheel.CFrame:Inverse() * ((wheel.CFrame* angles) * centerOffset)
 			end
 		end
-		
-		
 	end
 	
 	
@@ -252,6 +286,7 @@ function RigBuilder.new(settings, modelRef, owner )
 
 	self.RemoveMass = RemoveMass
 	self.UnanchorAll = UnanchorAll
+	self.SetCollision = SetCollision
 	self.SetNetwork = SetNetwork
 	self.WeldWheel = WeldWheel
 	self.SingleWeld = SingleWeld
