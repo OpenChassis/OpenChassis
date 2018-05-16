@@ -57,23 +57,23 @@ function RigBuilder.new(settings, modelRef, owner )
 		
 		for _, v in pairs(modelRef.Parts:GetDescendants()) do
 			if v:IsA('BasePart') then
-				physSer:SetPartCollisionGroup(v, bodyGroup)
+				physSer:SetPartCollisionGroup(v, bodyCollisionGroup)
 			end
 		end
 		
 		for _, v in pairs(modelRef.Wheels:GetChildren()) do
-			physSer:SetPartCollisionGroup(v.WheelCollider, wheelGroup)
+			physSer:SetPartCollisionGroup(v.WheelCollider, wheelCollisonGroup)
 		end
 		
 		for _, v in pairs(modelRef.BodyColliders:GetDescendants()) do
 			if v:IsA('BasePart') then
-				physSer:SetPartCollisionGroup(v, colliderGroup)
+				physSer:SetPartCollisionGroup(v, lowresColliderGroup)
 			end
 		end
 		
-		physSer:CollisionGroupSetCollidable(wheelGroup, bodyGroup, false)
-		physSer:CollisionGroupSetCollidable(wheelGroup, colliderGroup, false)
-		physSer:CollisionGroupSetCollidable(bodyGroup, colliderGroup, false)
+		physSer:CollisionGroupSetCollidable(wheelCollisonGroup, bodyCollisionGroup, false)
+		physSer:CollisionGroupSetCollidable(wheelCollisonGroup, lowresColliderGroup, false)
+		physSer:CollisionGroupSetCollidable(bodyCollisionGroup, lowresColliderGroup, false)
 	end
 	
 	local function SetNetwork(modelRef, owner)
