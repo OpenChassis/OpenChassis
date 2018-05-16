@@ -1,3 +1,5 @@
+-- module script child of Factory
+
 local v3 =  Vector3.new
 local cf = CFrame.new
 local cfa = CFrame.Angles
@@ -273,7 +275,7 @@ function RigBuilder.new(settings, modelRef, owner )
 	
 	local function RigAero(axleF, axleR)
 		local aeroF, aeroR, aeroC = vecf:Clone(), vecf:Clone(), vecf:Clone()
-		aeroF.Name, aeroR.Name, aeroC.Name = 'aeroF', 'aeroR', 'aeroC'
+		aeroF.Name, aeroR.Name, aeroC.Name = 'AeroF', 'AeroR', 'AeroC'
 		
 		local hub = a:Clone()
 		
