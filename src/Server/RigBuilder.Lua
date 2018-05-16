@@ -41,10 +41,6 @@ function RigBuilder.new(settings, modelRef, owner )
 		end
 	end
 	
-	local function DontCollide()
-		
-	end
-	
 	local function SetNetwork(modelRef, owner)
 		for _, v in pairs(modelRef:GetDescendants()) do
 			if (v:IsA('BasePart') and v.ClassName ~= 'Terrain') then
@@ -61,6 +57,8 @@ function RigBuilder.new(settings, modelRef, owner )
 		w.Part0 = p0
 		w.Part1 = p1
 		w.C0 = p0.CFrame:Inverse() * p1.CFrame
+		
+		return w
 	end
 	
 	local function WeldWheel(wheel, visualsModel)
@@ -89,10 +87,7 @@ function RigBuilder.new(settings, modelRef, owner )
 				
 				visualsModel:SetPrimaryPartCFrame((wheel.CFrame* angles) * centerOffset)
 				
-				local axWeld = weld:Clone()
-				axWeld.Parent = wheel
-				axWeld.Part0 = wheel
-				axWeld.Part1 = visualsModel.Main
+				local axWeld = SingleWeld(wheel, visualsModel.Main)
 				axWeld.C0 = wheel.CFrame:Inverse() * ((wheel.CFrame* angles) * centerOffset)
 			end
 		end
@@ -257,7 +252,6 @@ function RigBuilder.new(settings, modelRef, owner )
 
 	self.RemoveMass = RemoveMass
 	self.UnanchorAll = UnanchorAll
-	self.DontCollide = DontCollide
 	self.SetNetwork = SetNetwork
 	self.WeldWheel = WeldWheel
 	self.SingleWeld = SingleWeld
