@@ -2,14 +2,11 @@
 
 local signal = require(game.ReplicatedStorage:WaitForChild('Shared').Signal)
 local dataBuilder = require(script.DataBuilder)
+local eng = require(script.Components.Engine)
+local trans = require(script.Components.Transmission)
 
 local ChassisClient = {}
-ChassisClient.__index = function(t, k) --ChassisClient
-	if ChassisClient[k] then
-		return ChassisClient[k]
-	end
-	
-end
+ChassisClient.__index = ChassisClient
 
 -- when start driving
 function ChassisClient.new(id, settings, modelref, owner)
@@ -18,10 +15,10 @@ function ChassisClient.new(id, settings, modelref, owner)
 	
 	chassis.ID = id
 	
-	--states
-	chassis.MasterSwitch = false
-	chassis.Starter = false
+	chassis.Engine = eng.new()
+	chassis.Transmission = trans.new()
 	
+	--states
 	
 	chassis.AllTorque, chassis.DriveTorque, chassis.Aero = dataBuilder:GetForces(modelref, settings)
 	chassis.Steer = dataBuilder:GetSteering(modelref, settings)
@@ -29,13 +26,6 @@ function ChassisClient.new(id, settings, modelref, owner)
 	return chassis
 end
 
-function ChassisClient:Start()
-	if self.MasterSwitch == false then
-		return false
-	else
-		
-	end
-end
 
 -- when stop driving
 function ChassisClient:Destroy()
