@@ -46,9 +46,8 @@ function Signal.new()
 		return {Disconnect = disconnect}
 	end
 	
-	
 	function self:Fire(...)
-		print(#boundCallbacks)
+		
 		for i = 1, #boundCallbacks do
 			boundCallbacks[i](...)
 		end
