@@ -7,19 +7,35 @@ return {
 	FrontAxleOffset = 5.9,
 	FrontAxleHeight = -2,
 	Wheelbase = 10.9,
-	FrontAxleWidth = 6,
-	RearAxleWidth = 6,
+	FrontAxleWidth = 6.3,
+	RearAxleWidth = 6.3,
 	
-	WheelColliderRadius = 2.6,
+	FrontCamber = -3,
+	RearCamber = -7,
+	
+	DriveType = 'rwd',
+	SteerType = 'front',
+	
+	WheelColliderRadius = 2.35,
 	
 	FrontSuspensionHeight = 2.3,
-	FrontStiffness = 2500,
-	FrontDamping = 50,
+	FrontStiffness = 3500,
+	FrontDamping = 75,
 	
 	RearSuspensionHeight = 2.4,
-	RearStiffness = 2000,
-	RearDamping = 45,
+	RearStiffness = 3000,
+	RearDamping = 80,
 	
 	GrossWeight = 1200,
-	WeightDistribution = 48
+	WeightDistribution = 48,
+	
+	GearRatios = {
+		-3.4, --reverse
+		0,    --neutral
+		3.5,  --1
+		3.2,  --2
+		2.6,  --3
+		2.2,  --4
+		1.6,  --5
+	}
 }
