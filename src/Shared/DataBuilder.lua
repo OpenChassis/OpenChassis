@@ -41,6 +41,28 @@ function DataBuilder:GetSteering(modelRef, steerType)
 	return steer
 end
 
+function DataBuilder:GetWheelColliders(modelRef, driveType)
+	local drive = {}
+	
+	local all = {
+		 modelRef.Wheels.fl,
+		 modelRef.Wheels.fr,
+		 modelRef.Wheels.rl,
+		 modelRef.Wheels.rr
+	}
+
+	if string.lower(driveType) == 'fwd' or string.lower(driveType) == 'awd'  then
+		table.insert(drive, modelRef.Wheels.fl.WheelCollider)
+		table.insert(drive, modelRef.Wheels.fr.WheelCollider)
+	end
+	if string.lower(driveType) == 'awd'  or string.lower(driveType) == 'rwd' then
+		table.insert(drive, modelRef.Wheels.rl.WheelCollider)
+		table.insert(drive, modelRef.Wheels.rr.WheelCollider)
+	end
+	
+	return all, drive
+end
+
 function DataBuilder:GetSounds(modelRef)
 	local exhaust = false
 	local starter = false
@@ -70,6 +92,7 @@ end
 function DataBuilder:GetLights(modelRef)
 	local rearRunning = {}
 	local brake = {}
+	local reverse = {}
 	local low = {}
 	local high = {}
 	local fog = {}
@@ -82,6 +105,8 @@ function DataBuilder:GetLights(modelRef)
 				table.insert(rearRunning, v)
 			elseif v.Name == 'Brake' then
 				table.insert(brake, v)
+			elseif v.Name == 'Reverse' then
+				table.insert(reverse, v)
 			elseif v.Name == 'LowLamp' then
 				table.insert(low, v)
 			elseif v.Name == 'HighLamp' then
@@ -96,7 +121,7 @@ function DataBuilder:GetLights(modelRef)
 		end
 	end
 	
-	return rearRunning, brake, low, high, fog, turnLeft, turnRight
+	return rearRunning, brake, reverse, low, high, fog, turnLeft, turnRight
 end
 
 return DataBuilder
