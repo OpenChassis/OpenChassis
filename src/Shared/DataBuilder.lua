@@ -1,9 +1,9 @@
 local DataBuilder = {}
 
 function DataBuilder:GetForces(modelRef, driveType)
-	local allTorque = {} --sorted fl, fr, rl, rr
+	local allTorque   = {} --sorted fl, fr, rl, rr
 	local driveTorque = {} --sorted left right by axles ie (fl, fr, rl, rr) for awd or (rl, rr) for rwd
-	local aero = {} -- currently only center
+	local aero		  = {} -- currently only center
 	
 	table.insert(allTorque, modelRef.Wheels.fl.WheelCollider.Torque)
 	table.insert(allTorque, modelRef.Wheels.fr.WheelCollider.Torque)
@@ -23,6 +23,24 @@ function DataBuilder:GetForces(modelRef, driveType)
 	table.insert(aero, modelRef.Main.AeroC)
 	
 	return allTorque, driveTorque, aero
+end
+
+function DataBuilder:GetDampeners(modelRef, driveType)
+	local allDampener = {modelRef.Wheels.fl.StrutMount.Dampener, modelRef.Wheels.fr.StrutMount.Dampener, modelRef.Wheels.rl.StrutMount.Dampener, modelRef.Wheels.rr.StrutMount.Dampener}
+	local driveDampener = {}
+	
+	for _, v in pairs( modelRef.Wheels:GetChildren()) do
+		
+		if driveType == 'fwd' and (v.Name == 'fl' or v.Name == 'fr') then
+			table.insert(driveDampener, v.StrutMount.Dampener)
+		elseif driveType == 'rwd' and (v.Name == 'rl' or v.Name == 'rr') then
+			table.insert(driveDampener, v.StrutMount.Dampener)
+		elseif driveType == 'awd' then
+			table.insert(driveDampener, v.StrutMount.Dampener)
+		end
+	end
+	
+	return allDampener, driveDampener
 end
 
 function DataBuilder:GetSteering(modelRef, steerType)
@@ -45,10 +63,10 @@ function DataBuilder:GetWheelColliders(modelRef, driveType)
 	local drive = {}
 	
 	local all = {
-		 modelRef.Wheels.fl,
-		 modelRef.Wheels.fr,
-		 modelRef.Wheels.rl,
-		 modelRef.Wheels.rr
+		 modelRef.Wheels.fl.WheelCollider,
+		 modelRef.Wheels.fr.WheelCollider,
+		 modelRef.Wheels.rl.WheelCollider,
+		 modelRef.Wheels.rr.WheelCollider
 	}
 
 	if string.lower(driveType) == 'fwd' or string.lower(driveType) == 'awd'  then
@@ -72,11 +90,11 @@ function DataBuilder:GetSounds(modelRef)
 	
 	for k, v in pairs(modelRef:GetDescendants()) do
 		if v:IsA('Sound') then
-			if v.Name == 'Exhaust' then
+			if v.Name == 'Exhaust2' then
 				exhaust = v
 			elseif v.Name == 'Starter' then
 				starter = v
-			elseif v.Name == 'Idle' then
+			elseif v.Name == 'Idle2' then
 				idle = v
 			elseif v.Name == 'LockBeep' then
 				lockBeep = v
