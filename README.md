@@ -1,8 +1,11 @@
 # OpenChassis
-Please excuse the mess! This project is in very early stages of development. 
-[Check the OpenChassis Wiki for more information](https://github.com/OpenChassis/OpenChassis/wiki)
+Please excuse the mess! This project is in very early stages of development.
 
-## The future home of OpenChassis
+## Preview OpenChassis
+
+A demo place for OpenChassis is included in this repo [here](https://github.com/OpenChassis/OpenChassis/blob/master/demo%20clutter/DemoPlace.rbxl), or can be tested ingame [here](https://www.roblox.com/games/1949829285/OpenChassis-Testing)
+
+## Early development of OpenChassis
 
 OpenChassis was inspired by [A-Chassis](https://www.roblox.com/library/1218274008/A-Chassis-6-72-T-by-Novena) and [SS6](https://www.roblox.com/library/759112322/SS6-Build-L025-SUSPENSION) plug and play car chassis systems primarily developed by [Inspare](https://www.roblox.com/groups/group.aspx?gid=730547). While both wildly successful in terms of use reach; signs of age are prevalent. OpenChassis desires to become a spiritual successor of the Inspare pair, with more focus on usability utilizing newer features of Roblox. 
 
