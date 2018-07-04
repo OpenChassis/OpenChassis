@@ -1,3 +1,5 @@
+local twoPi = 2 * math.pi
+
 local ChassisHelper = {}
 
 function ChassisHelper:GetFastestRotation(wheels)
@@ -31,21 +33,20 @@ function ChassisHelper:GetSlip(wheels)
 end
 
 function ChassisHelper:PowerCurveLookup(rpm, curve)
-	
+
 	local minRpm, maxRpm = 0, math.huge
 	
 	for i = 1, #curve do
 		local thisCurve = curve[i]
-		
 		if rpm <= thisCurve[1] then
 			if curve[i - 1] and rpm > curve[i - 1][1] then
 				local prevCurve = curve[i - 1]
 				
-				local difference = thisCurve[1] - prevCurve[1]
+				local difference = thisCurve[2] - prevCurve[2]
 				
 				local alpha = difference / (rpm - prevCurve[1])
 				
-				-- lerp to find torque				
+				-- lerp to find torque		
 				return thisCurve[2] + alpha * (prevCurve[2] - thisCurve[2])
 					
 			else
@@ -53,11 +54,20 @@ function ChassisHelper:PowerCurveLookup(rpm, curve)
 			end
 		end
 	end
-	return 0
+	if rpm > curve[#curve][1] then
+		return curve[#curve][2]
+	else
+		return 0
+	end
+	return 0 --just incase... 
 end
 
 function ChassisHelper:GetHorsePower(rpm, torque)
 	return torque * rpm/5252
+end
+
+function ChassisHelper:RadiansToRPM(rotVelcMag)
+    return rotVelcMag / twoPi
 end
 
 return ChassisHelper

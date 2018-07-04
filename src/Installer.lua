@@ -37,4 +37,4 @@ end
 
 wait(2)
 
-script:Destroy()
+script.Parent:Destroy()

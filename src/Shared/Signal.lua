@@ -1,6 +1,5 @@
 -- closure scoping reimplement of https://github.com/LPGhatguy/lemur/blob/master/lib/Signal.lua
 local Signal = {}
-Signal.__index = Signal
 
 local function listInsert(list, ...)
 	local args = {...}

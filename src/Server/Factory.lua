@@ -89,7 +89,7 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 			Dampener = rigBuilder.RigDampener(v,suspension[k])
 		}
 	
-		wheelForces[k] = rigBuilder.RigWheelTorque(v)
+		--wheelForces[k] = rigBuilder.RigWheelTorque(v)
 		
 		wheelModels[k] = keyedWheel
 		
@@ -117,7 +117,7 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 	
 	wait(.1)
 	
-	local massF, massR, massC = rigBuilder.RigMass(axleF, axleR)
+	local massF, massR = rigBuilder.RigMass(axleF, axleR)
 	
 	local aeroF, aeroR, aeroC = rigBuilder.RigAero(axleF, axleR)
 	
@@ -132,17 +132,22 @@ function Factory.NewChassis(buildSettings, modelRef, owner)
 			end
 		end
 	end
+
+	rigBuilder.SingleWeld(main, massF)
+	rigBuilder.SingleWeld(main, massR)
 	
 	rigBuilder.UnanchorAll(modelRef)
 	
 	if owner then
 		rigBuilder.SetNetwork(modelRef, owner)
-	end
-	
+	end	
+
 	if buildSettings._isDev == true then
-	
+		
 	else
-	
+		main.Transparency = 1
+		massF.Transparency = 1
+		massR.Transparency = 1
 	end
 	
 	if Factory.ChassisCreated then
